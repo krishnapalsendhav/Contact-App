@@ -1,4 +1,4 @@
-import 'package:alison/ui/contact/contact_create.dart';
+import 'package:alison/ui/contact_list/contact_list_page.dart';
 import 'package:alison/ui/model/contact_model.dart';
 import 'package:flutter/material.dart';
 import 'package:scoped_model/scoped_model.dart';
@@ -20,7 +20,7 @@ class MyApp extends StatelessWidget {
         theme: ThemeData(
           primarySwatch: Colors.purple,
         ),
-        home: const ContactCreatePage(),
+        home: const ContactListPage(),
       ),
     );
   }

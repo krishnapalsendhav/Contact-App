@@ -3,7 +3,7 @@ import 'package:faker/faker.dart';
 import 'package:scoped_model/scoped_model.dart';
 
 class ContactsModel extends Model {
-  late final List<Contact> _contact = List.generate(100, (index) {
+  late final List<Contact> _contact = List.generate(2, (index) {
     return Contact(
       name: "${faker.person.firstName()} ${faker.person.lastName()}",
       email: faker.internet.email(),
@@ -12,6 +12,21 @@ class ContactsModel extends Model {
   });
 
   List<Contact> get contacts => _contact;
+
+  void addContact(Contact contact) {
+    _contact.add(contact);
+    notifyListeners();
+  }
+
+  void editContact(Contact contact, int contactIndex) {
+    _contact[contactIndex] = contact;
+    notifyListeners();
+  }
+
+  void deleteContact(int index) {
+    _contact.removeAt(index);
+    notifyListeners();
+  }
 
   void changeFavoriteStatus(int index) {
     _contact[index].isFavorite = !_contact[index].isFavorite;
