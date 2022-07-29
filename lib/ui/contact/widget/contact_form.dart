@@ -1,6 +1,9 @@
+import 'dart:io';
+
 import 'package:alison/data/contact.dart';
 import 'package:alison/ui/model/contact_model.dart';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:scoped_model/scoped_model.dart';
 
 class ContactForm extends StatefulWidget {
@@ -18,6 +21,7 @@ class _ContactFormState extends State<ContactForm> {
   String? _name;
   String? _email;
   String? _phoneNumber;
+  File? _contactImage;
   bool get isEditMode => widget.editedContact != null;
   //Validating Name
   String? _validatorName(value) {
@@ -25,6 +29,46 @@ class _ContactFormState extends State<ContactForm> {
       return 'Enter your Name';
     } else {
       return null;
+    }
+  }
+
+  Widget _buildContactImage() {
+    final size = MediaQuery.of(context).size.width / 5.6;
+    return GestureDetector(
+      onTap: () => _onTapOnCircleAvatar(),
+      child: CircleAvatar(
+        radius: size,
+        backgroundColor: Colors.grey.shade300,
+        child: _contactImage != null
+            ? ClipOval(
+                child: AspectRatio(
+                    aspectRatio: 1,
+                    child: Image.file(
+                      _contactImage!,
+                      fit: BoxFit.cover,
+                    )))
+            : Icon(
+                Icons.person,
+                size: size + 20,
+                color: Colors.white70,
+              ),
+      ),
+    );
+  }
+
+  Future _onTapOnCircleAvatar() async {
+    try {
+      // Pick an image
+      final imageFile =
+          await ImagePicker().pickImage(source: ImageSource.gallery);
+      if (imageFile == null) return;
+
+      final tempImage = File(imageFile.path);
+      setState(() {
+        _contactImage = tempImage;
+      });
+    } catch (e) {
+      print(e);
     }
   }
 
@@ -60,6 +104,10 @@ class _ContactFormState extends State<ContactForm> {
         key: _formKey,
         child: ListView(
           children: [
+            const SizedBox(
+              height: 40,
+            ),
+            _buildContactImage(),
             const SizedBox(
               height: 10,
             ),
@@ -134,8 +182,11 @@ class _ContactFormState extends State<ContactForm> {
           name: _name!,
           email: _email!,
           phoneNumber: _phoneNumber!,
+          imageFile: _contactImage,
           isFavorite: widget.editedContact?.isFavorite ?? false);
+
       if (isEditMode) {
+        newContact.id = widget.editedContact!.id;
         ScopedModel.of<ContactsModel>(context)
             .editContact(newContact, widget.editedContactIndex!);
       } else {

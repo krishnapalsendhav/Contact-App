@@ -169,21 +169,39 @@ class _ContactListPageState extends State<ContactListPage> {
                     )),
           )),
       leading: CircleAvatar(
-        child: Text(
-          model.contacts[index].name.substring(0, 1),
-          style: const TextStyle(color: Colors.white, fontSize: 18),
-        ),
+        child: _buildCircleAvatar(model, index),
       ),
       trailing: IconButton(
         onPressed: () {
           model.changeFavoriteStatus(index);
         },
         icon: Icon(
-          model.contacts[index].isFavorite ? Icons.star : Icons.star_border,
+          model.contacts[index].isFavorite
+              ? Icons.favorite_rounded
+              : Icons.favorite_border_rounded,
           color: model.contacts[index].isFavorite ? Colors.purple : Colors.grey,
           // Icons.safety_check,
         ),
       ),
     );
+  }
+
+  Widget _buildCircleAvatar(ContactsModel model, int index) {
+    if (model.contacts[index].imageFile == null) {
+      return Text(
+        model.contacts[index].name[0],
+        style: const TextStyle(color: Colors.white, fontSize: 18),
+      );
+    } else {
+      return ClipOval(
+        child: AspectRatio(
+          aspectRatio: 1,
+          child: Image.file(
+            model.contacts[index].imageFile!,
+            fit: BoxFit.cover,
+          ),
+        ),
+      );
+    }
   }
 }

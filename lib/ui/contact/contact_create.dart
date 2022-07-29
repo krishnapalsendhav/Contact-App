@@ -1,7 +1,5 @@
 import 'package:alison/ui/contact/widget/contact_form.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/src/foundation/key.dart';
-import 'package:flutter/src/widgets/framework.dart';
 
 class ContactCreatePage extends StatelessWidget {
   const ContactCreatePage({Key? key}) : super(key: key);
@@ -10,7 +8,7 @@ class ContactCreatePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Contact Create"),
+        title: const Text("Create Contact"),
       ),
       body: const ContactForm(),
     );

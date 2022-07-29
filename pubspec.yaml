@@ -38,6 +38,9 @@ dependencies:
   scoped_model: ^2.0.0-nullsafety.0
   flutter_phone_direct_caller: ^2.1.1
   flutter_slidable: ^2.0.0
+  image_picker: ^0.8.5+3
+  sembast: ^3.2.0+1
+  path_provider: ^2.0.11
   
 
 dev_dependencies:
