@@ -32,19 +32,19 @@ class _ContactFormState extends State<ContactForm> {
     }
   }
 
-  Widget _buildContactImage() {
+  Widget _buildContactImage(image) {
     final size = MediaQuery.of(context).size.width / 5.6;
     return GestureDetector(
       onTap: () => _onTapOnCircleAvatar(),
       child: CircleAvatar(
         radius: size,
         backgroundColor: Colors.grey.shade300,
-        child: _contactImage != null
+        child: widget.editedContact!.imageFile != null
             ? ClipOval(
                 child: AspectRatio(
                     aspectRatio: 1,
                     child: Image.file(
-                      _contactImage!,
+                      widget.editedContact!.imageFile!,
                       fit: BoxFit.cover,
                     )))
             : Icon(
@@ -99,7 +99,9 @@ class _ContactFormState extends State<ContactForm> {
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(
+    BuildContext context,
+  ) {
     return Form(
         key: _formKey,
         child: ListView(
@@ -107,7 +109,7 @@ class _ContactFormState extends State<ContactForm> {
             const SizedBox(
               height: 40,
             ),
-            _buildContactImage(),
+            _buildContactImage(widget.editedContact?.imageFile),
             const SizedBox(
               height: 10,
             ),
@@ -187,8 +189,7 @@ class _ContactFormState extends State<ContactForm> {
 
       if (isEditMode) {
         newContact.id = widget.editedContact!.id;
-        ScopedModel.of<ContactsModel>(context)
-            .editContact(newContact, widget.editedContactIndex!);
+        ScopedModel.of<ContactsModel>(context).editContact(newContact);
       } else {
         ScopedModel.of<ContactsModel>(context).addContact(newContact);
       }

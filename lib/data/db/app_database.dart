@@ -9,21 +9,21 @@ class AppDatabase {
   static final AppDatabase _singletom = AppDatabase._();
   static AppDatabase get instance => _singletom;
 
-  late Completer<Database> _dbOpenCompleter;
+  Completer<Database>? _dbOpenCompleter;
   AppDatabase._();
-  late Database _database;
   Future<Database> get database async {
+    print("${_dbOpenCompleter == null}");
     if (_dbOpenCompleter == null) {
       _dbOpenCompleter = Completer();
       _openDatabase();
     }
-    return _dbOpenCompleter.future;
+    return _dbOpenCompleter!.future;
   }
 
   Future _openDatabase() async {
     final appDocumentDir = await getApplicationDocumentsDirectory();
     final dbPath = join(appDocumentDir.path, 'contact.db');
     final database = await databaseFactoryIo.openDatabase(dbPath);
-    _dbOpenCompleter.complete(database);
+    _dbOpenCompleter!.complete(database);
   }
 }

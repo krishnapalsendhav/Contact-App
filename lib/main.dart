@@ -14,7 +14,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ScopedModel(
-      model: ContactsModel(),
+      model: ContactsModel()..loadContact(),
       child: MaterialApp(
         title: 'Flutter Demo',
         theme: ThemeData(

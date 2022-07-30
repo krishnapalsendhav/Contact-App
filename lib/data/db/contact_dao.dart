@@ -7,10 +7,11 @@ class ContactDao {
   final _contactStore = intMapStoreFactory.store(CONTACT_STORE_NAME);
   Future<Database> get _db async => await AppDatabase.instance.database;
   Future insert(Contact contact) async {
-    await _contactStore.add(
+    var svae = await _contactStore.add(
       await _db,
       contact.toMap(),
     );
+    print("Save as :   $svae");
   }
 
   Future update(Contact contact) async {
@@ -21,5 +22,19 @@ class ContactDao {
   Future delete(Contact contact) async {
     final finder = Finder(filter: Filter.byKey(contact.id));
     await _contactStore.delete(await _db, finder: finder);
+  }
+
+  Future<List<Contact>> getAllInSortedOrder() async {
+    final finder = Finder(sortOrders: [
+      SortOrder('isFavorite', false),
+      SortOrder('name'),
+    ]);
+    final recordSnapshot = await _contactStore.find(await _db, finder: finder);
+
+    return recordSnapshot.map((snapshot) {
+      final contact = Contact.fromMap(snapshot.value);
+      contact.id = snapshot.key;
+      return contact;
+    }).toList();
   }
 }

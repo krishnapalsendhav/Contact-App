@@ -2,7 +2,6 @@ import 'package:alison/data/contact.dart';
 import 'package:alison/ui/contact/contact_create.dart';
 import 'package:alison/ui/contact/contact_edit_page.dart';
 import 'package:alison/ui/model/contact_model.dart';
-import 'package:faker/faker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_phone_direct_caller/flutter_phone_direct_caller.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
@@ -17,24 +16,6 @@ class ContactListPage extends StatefulWidget {
 }
 
 class _ContactListPageState extends State<ContactListPage> {
-  var fake = Faker();
-  var parag = Contact(
-      name: "Parag Giri",
-      email: "sonagiri1982@gmail.com",
-      phoneNumber: "9406850590");
-  var vedik = Contact(
-      name: "Vedik Jain",
-      email: "vedikshrimalli@gmail.com",
-      phoneNumber: "7879188398");
-  @override
-  void initState() {
-    setState(() {
-      ScopedModel.of<ContactsModel>(context).addContact(parag);
-      ScopedModel.of<ContactsModel>(context).addContact(vedik);
-    });
-    super.initState();
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -52,50 +33,55 @@ class _ContactListPageState extends State<ContactListPage> {
         ),
       ),
       appBar: AppBar(
-        title: const Text("Contact"),
+        title: const Text("Contacts"),
       ),
-      drawer: const Drawer(),
       body: ScopedModelDescendant<ContactsModel>(
         builder: (context, child, model) {
-          return ListView.builder(
-              itemCount: model.contacts.length,
-              itemBuilder: (context, index) {
-                final displayedContact = model.contacts[index];
-                Future<void> callToNumber(context) async {
-                  await FlutterPhoneDirectCaller.callNumber(
-                      model.contacts[index].phoneNumber);
-                }
+          if (model.isloading) {
+            return const Center(
+              child: CircularProgressIndicator(),
+            );
+          } else {
+            return ListView.builder(
+                itemCount: model.contacts.length,
+                itemBuilder: (context, index) {
+                  final displayedContact = model.contacts[index];
+                  Future<void> callToNumber(context) async {
+                    await FlutterPhoneDirectCaller.callNumber(
+                        model.contacts[index].phoneNumber);
+                  }
 
-                return Container(
-                  margin: const EdgeInsets.all(10),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(8),
-                    color: Colors.grey.shade100,
-                    boxShadow: const [
-                      BoxShadow(
-                        color: Colors.black12,
-                        blurRadius: 5.0,
-                        spreadRadius: 1.0,
-                        offset: Offset(
-                          1.0,
-                          1.0,
+                  return Container(
+                    margin: const EdgeInsets.all(10),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(8),
+                      color: Colors.grey.shade100,
+                      boxShadow: const [
+                        BoxShadow(
+                          color: Colors.black12,
+                          blurRadius: 5.0,
+                          spreadRadius: 1.0,
+                          offset: Offset(
+                            1.0,
+                            1.0,
+                          ),
                         ),
-                      ),
-                      BoxShadow(
-                        color: Colors.black12,
-                        blurRadius: 5.0,
-                        spreadRadius: 1.0,
-                        offset: Offset(
-                          -1.0,
-                          -1.0,
-                        ),
-                      )
-                    ],
-                  ),
-                  child: _buildSlidable(
-                      callToNumber, model, index, context, displayedContact),
-                );
-              });
+                        BoxShadow(
+                          color: Colors.black12,
+                          blurRadius: 5.0,
+                          spreadRadius: 1.0,
+                          offset: Offset(
+                            -1.0,
+                            -1.0,
+                          ),
+                        )
+                      ],
+                    ),
+                    child: _buildSlidable(
+                        callToNumber, model, index, context, displayedContact),
+                  );
+                });
+          }
         },
       ),
     );
@@ -133,7 +119,7 @@ class _ContactListPageState extends State<ContactListPage> {
         children: [
           SlidableAction(
             onPressed: (context) {
-              model.deleteContact(index);
+              model.deleteContact(displayedContact);
             },
             backgroundColor: const Color(0xFFFE4A49),
             foregroundColor: Colors.white,
@@ -173,7 +159,7 @@ class _ContactListPageState extends State<ContactListPage> {
       ),
       trailing: IconButton(
         onPressed: () {
-          model.changeFavoriteStatus(index);
+          model.changeFavoriteStatus(displayedContact);
         },
         icon: Icon(
           model.contacts[index].isFavorite

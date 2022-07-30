@@ -20,7 +20,7 @@ class Contact {
       'name': name,
       'email': email,
       'phoneNumber': phoneNumber,
-      'isFavorite': isFavorite,
+      'isFavorite': isFavorite ? 1 : 0,
       'imageFilePath': imageFile?.path,
     };
   }
@@ -30,7 +30,7 @@ class Contact {
         name: map['name'],
         email: map['email'],
         phoneNumber: map['phoneNumber'],
-        isFavorite: map['isFavorite'],
+        isFavorite: map['isFavorite'] == 1 ? true : false,
         imageFile:
             map['imageFilePath'] != null ? File(map['imageFilePath']) : null);
   }
